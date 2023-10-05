@@ -1,0 +1,42 @@
+{
+	"development": {
+		"mysql": {
+			"username": "root",
+			"password": "rootadmin",
+			"database": "emailtroop",
+			"host": "localhost",
+			"dialect": "mysql",
+			"charset" : "utf8mb4",
+			"logging": true,
+			"define": {
+				"timestamps": true
+			},
+			"pool": {
+				"max": 30,
+				"min": 0,
+				"acquire": 40000,
+				"idle": 10000
+			}
+		}
+	},
+	"production": {
+		"mysql": {
+			"username": "USERNAME",
+			"password": "PASSWORD",
+			"database": "DATABASE_NAME",
+			"host": "localhost",
+			"dialect": "mysql",
+			"charset" : "utf8mb4",
+			"logging": false,
+			"define": {
+				"timestamps": true
+			},
+			"pool": {
+				"max": 30,
+				"min": 0,
+				"acquire": 40000,
+				"idle": 10000
+			}
+		}
+	}
+}
