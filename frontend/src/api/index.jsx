@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const postRequest = async (url, params) => {
     try {
-        const res = await axios.post(url, params);
+        const res = await axios.post(`http://localhost:6002/api/v1${url}`, params);
         const { data } = res;
         if (data.success) {
             return data.message;

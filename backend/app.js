@@ -63,7 +63,7 @@ const apiRoutes = require('./routes/api');
 /**
 * Set all routes here, orders are important
 */
-app.use('/api', apiRoutes);
+app.use('/api/v1', apiRoutes);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

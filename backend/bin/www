@@ -24,9 +24,9 @@ models.sequelize.sync().then(() => {
 /**
         * Listen on provided port, on all network interfaces.
         */
-server.listen(port, () => {
-    console.info(`Express server listening on port ${server.address().port}`);
-}, '0.0.0.0');
+	server.listen(port, () => {
+		console.info(`Express server listening on port ${server.address().port}`);
+	}, '0.0.0.0');
 });
 // });
 

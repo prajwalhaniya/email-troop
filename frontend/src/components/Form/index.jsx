@@ -2,7 +2,7 @@ import { Button, Card, CardActions, CardContent, TextField, Typography } from "@
 import './styles.css';
 import { useState } from "react";
 import { checkEmailValidation } from "../../../util/emailServices";
-// import { postRequest } from "../../api";
+import { postRequest } from "../../api";
 
 function FormInputs() {
     const [state, setState] = useState({
@@ -10,7 +10,8 @@ function FormInputs() {
         eamilError: false,
         password: '',
         passwordError: false,
-        isFetchButton: false
+        isFetchButton: false,
+        isLoading: false
     });
 
     const emailHandler = async e => {
@@ -48,11 +49,17 @@ function FormInputs() {
                 email: state.email,
                 password: state.password
             }
-            // const data = await postRequest('/api/', params);
-            console.log({ params })
+            setState(prev => ({ ...prev, isLoading: true }))
+            const result = await postRequest('/import_emails', params);
+            if (result) {
+                setState(prev => ({ ...prev, isLoading: false }));
+            } else {
+                setState(prev => ({ ...prev, isLoading: false }));
+            }
 
         } catch (error) {
             console.error('Error while fetching the emails', error);
+            setState(prev => ({ ...prev, isLoading: false }));
         }
     }
 

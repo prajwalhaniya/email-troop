@@ -8,9 +8,9 @@ module.exports = (sequelize, Datatypes) => {
     email.init(
         {
             id: {
-                type: Datatypes.INTEGER,
-                autoIncrement: true,
+                type: Datatypes.BIGINT,
                 primaryKey: true,
+                autoIncrement: true
             },
             mailId: {
                 type: Datatypes.INTEGER,
