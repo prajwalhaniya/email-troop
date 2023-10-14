@@ -24,4 +24,10 @@ router.post('/get-unique-emails', async (req, res) => {
     res.json(data);
 });
 
+/** Pending API: Needs improvement, able to download csv */
+router.get('/download_emails', async (req, res) => {
+    const data = await emailServices.exportData(req, res);
+    console.log({ data });
+});
+
 module.exports = router;

@@ -21,28 +21,30 @@ const self = module.exports = {
                         from, to, date, cc
                     } = contacts[i];
 
-                    if (from) {
-                        allEmails.push({
-                            email: from,
-                            email_date: date,
-                        });
-                    }
-
-                    if (to) {
-                        allEmails.push({
-                            email: to,
-                            email_date: date,
-                        });
-                    }
-
-                    if (cc) {
-                        const ccEmails = await self.extractEmails(cc);
-
-                        for (let i = 0; i < ccEmails.length; i++) {
+                    if (date !== 'Invalid date' || date !== null) {
+                        if (from) {
                             allEmails.push({
-                                email: ccEmails[i],
+                                email: from,
                                 email_date: date,
                             });
+                        }
+
+                        if (to) {
+                            allEmails.push({
+                                email: to,
+                                email_date: date,
+                            });
+                        }
+
+                        if (cc) {
+                            const ccEmails = await self.extractEmails(cc);
+
+                            for (let i = 0; i < ccEmails.length; i++) {
+                                allEmails.push({
+                                    email: ccEmails[i],
+                                    email_date: date,
+                                });
+                            }
                         }
                     }
                 }
@@ -61,7 +63,9 @@ const self = module.exports = {
 
                 await models.unique_email.bulkCreate(result, { updateOnDuplicate: ['email', 'email_date'] });
                 contacts.map(async (contact) => {
-                    await models.email.create(contact);
+                    if (contact?.date !== 'Invalid date' || contact?.date !== null) {
+                        await models.email.create(contact);
+                    }
                 });
 
                 return { success: true, message: `Imported ${contacts.length} emails & found ${uniqueEmails.length} unique emails` };
@@ -243,6 +247,43 @@ const self = module.exports = {
         } catch (error) {
             console.log('Error while getting all unique emails', error);
             return { success: false, message: 'Error while getting all unique emails' };
+        }
+    },
+
+    /**
+     * @description: download data in csv format
+     * @param {object} req - Express request object
+     * @param {object} res - Express response object
+     * @returns
+     */
+    exportData: async (req, res) => {
+        try {
+            const Papa = require('papaparse');
+            /** Pending: Download based on userId */
+            const userEmailData = await models.unique_email.findAll({
+                attributes: ['id', 'email', 'email_date'],
+                raw: true,
+                nest: true
+            });
+
+            const csvData = [];
+
+            if (userEmailData && userEmailData.length > 0) {
+                csvData.push(['id', 'email', 'email_date']);
+
+                for (const row of userEmailData) {
+                    csvData.push([row.id, row.email, row.email_date]);
+                }
+            }
+
+            const csv = Papa.unparse(csvData);
+
+            res.setHeader('Content-Type', 'text/csv');
+            res.setHeader('Content-Disposition', 'attachment; filename=email_data.csv');
+            res.send(csv);
+        } catch (error) {
+            console.log('Error while downloading csv data', error);
+            return { success: false, message: 'Error occurred' };
         }
     }
 };

@@ -38,12 +38,12 @@ module.exports = (sequelize, Datatypes) => {
                 defaultValue: null,
             },
             cc: {
-                type: Datatypes.STRING(1000),
+                type: Datatypes.STRING(5000),
                 allowNull: true,
                 defaultValue: null,
             },
             date: {
-                type: Datatypes.DATE,
+                type: Datatypes.STRING,
                 allowNull: true,
                 defaultValue: null,
             },
