@@ -1,8 +1,9 @@
-import { Button, Card, CardActions, CardContent, TextField, Typography } from "@mui/material";
+import { Button, Card, CardActions, CardContent, CircularProgress, TextField, Typography } from "@mui/material";
 import './styles.css';
 import { useState } from "react";
 import { checkEmailValidation } from "../../../util/emailServices";
 import { postRequest } from "../../api";
+import EmailView from "../view";
 
 function FormInputs() {
     const [state, setState] = useState({
@@ -11,7 +12,10 @@ function FormInputs() {
         password: '',
         passwordError: false,
         isFetchButton: false,
-        isLoading: false
+        isLoading: false,
+        responseMessage: '',
+        isTableViewButton: false,
+        isTableView: false
     });
 
     const emailHandler = async e => {
@@ -49,10 +53,10 @@ function FormInputs() {
                 email: state.email,
                 password: state.password
             }
-            setState(prev => ({ ...prev, isLoading: true }))
+            setState(prev => ({ ...prev, isLoading: true, responseMessage: '' }))
             const result = await postRequest('/import_emails', params);
             if (result) {
-                setState(prev => ({ ...prev, isLoading: false }));
+                setState(prev => ({ ...prev, isLoading: false, responseMessage: result, isTableViewButton: true }));
             } else {
                 setState(prev => ({ ...prev, isLoading: false }));
             }
@@ -63,10 +67,14 @@ function FormInputs() {
         }
     }
 
+    const tableViewHandler = () => {
+        setState(prev => ({ ...prev, isTableView: !prev.isTableView }));
+    }
+
     return (
         <>
             <div className="form-container">
-                <Card sx={{ minWidth: 350 }}>
+                {!state.isTableView ? <Card sx={{ minWidth: 350 }}>
                     <CardContent>
                         <Typography>EMAILTROOP</Typography>
                         <div className="mt-3">
@@ -77,12 +85,17 @@ function FormInputs() {
                         </div>
                     </CardContent>
                     <CardActions>
-                        <Button disabled={!state.isFetchButton} size="small" variant="outlined" onClick={fetchEmails}>Fetch Emails</Button>
-                        <Button disabled size="small" variant="contained">Export</Button>
+                        {!state.isLoading ? <Button disabled={!state.isFetchButton} size="small" variant="outlined" onClick={fetchEmails}>Submit</Button> : <Button className="text-muted" startIcon={<CircularProgress size={20} />} size="small" variant="outlined"> Loading</Button>}
+                        {/* <Button disabled size="small" variant="contained">Export</Button> */}
+                        <br />
                     </CardActions>
-                    
-                </Card>
+                    <div className="text-success p-2">{state.responseMessage && state.responseMessage.length > 0 ? state.responseMessage : ''}</div>
+                    <div className="p-2">
+                        { state.isTableViewButton ? <Button size="small" variant="outlined" onClick={tableViewHandler} fullWidth>View Emails</Button> : null}
+                    </div>
+                </Card> : null}
             </div>
+            {state.isTableView ? <EmailView closeView={tableViewHandler} /> : null}
         </>
     )
 }

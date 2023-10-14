@@ -219,5 +219,30 @@ const self = module.exports = {
             console.log('Error while extracting emails', error);
             return false;
         }
+    },
+
+    getAllUniqueEmails: async (params) => {
+        try {
+            let { limit } = params;
+            if (limit) {
+                limit = limit > 12 ? limit - 12 : 0;
+            } else {
+                limit = 0;
+            }
+            const data = await models.unique_email.findAndCountAll({
+                limit: [limit, 12],
+                attributes: ['id', 'email', 'email_date'],
+                order: [['email_date', 'ASC']],
+                raw: true,
+                nest: true
+            });
+            if (data && data.rows.length > 0) {
+                return { success: true, message: data };
+            }
+            return { success: true, message: [] };
+        } catch (error) {
+            console.log('Error while getting all unique emails', error);
+            return { success: false, message: 'Error while getting all unique emails' };
+        }
     }
 };
