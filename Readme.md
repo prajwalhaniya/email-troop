@@ -1,5 +1,9 @@
 # Emailtroop
-This is an open source tool for extracting emails from your all your emails. 
+Emailtroop is a tool that help you in extracting emails from your inbox.
+
+![project image](./docs/assets/emailtroop.png)
+
+This tool is under development. You can tinker with it on your machine by cloning the repo.
 
 ### Procedures before extracting emails
 
