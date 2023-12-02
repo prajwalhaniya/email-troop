@@ -2,8 +2,9 @@ import { Button, Card, CardActions, CardContent, CircularProgress, TextField, Ty
 import './styles.css';
 import { useState } from "react";
 import { checkEmailValidation } from "../../../util/emailServices";
-import { postRequest } from "../../api";
-import EmailView from "../view";
+import { getRequest, postRequest } from "../../api";
+import EmailView from "../EmailView";
+import { CloudDownload, Visibility } from '@mui/icons-material';
 
 function FormInputs() {
     const [state, setState] = useState({
@@ -71,6 +72,14 @@ function FormInputs() {
         setState(prev => ({ ...prev, isTableView: !prev.isTableView }));
     }
 
+    const downloadHandler = async () => {
+        try {
+            await getRequest('/download_emails');
+        } catch (error) {
+            console.log('Error whule downloading the emails', error);
+        }
+    }
+
     return (
         <>
             <div className="form-container">
@@ -90,8 +99,13 @@ function FormInputs() {
                         <br />
                     </CardActions>
                     <div className="text-success p-2">{state.responseMessage && state.responseMessage.length > 0 ? state.responseMessage : ''}</div>
-                    <div className="p-2">
-                        { state.isTableViewButton ? <Button size="small" variant="outlined" onClick={tableViewHandler} fullWidth>View Emails</Button> : null}
+                    <div className="p-2 email-action-container">
+                        { state.isTableViewButton ? 
+                        <>
+                            <Button startIcon={<Visibility />} style={{ marginRight: 4 }} size="small" variant="outlined" onClick={tableViewHandler}>View Emails</Button> 
+                            <Button startIcon={<CloudDownload />} size="small" variant="outlined" onClick={downloadHandler}>Download </Button> 
+                        </>
+                        : null}
                     </div>
                 </Card> : null}
             </div>

@@ -38,6 +38,7 @@ function EmailView({ closeView }) {
     }, []);
 
     const startIndex = (12*page) > 12 ? (12*page) - 12 : 0;
+    const textStyle = { maxWidth: '300px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' };
 
     return (
         <>
@@ -61,7 +62,7 @@ function EmailView({ closeView }) {
                                     <>
                                         <TableRow key={email?.id}>
                                             <TableCell className="text-right">{startIndex + index + 1}</TableCell>
-                                            <TableCell>{email?.email}</TableCell>
+                                            <TableCell style={textStyle}>{email?.email}</TableCell>
                                             <TableCell>{email?.email_date}</TableCell>
                                         </TableRow>
                                     </>
